@@ -8,23 +8,19 @@ public class TicTacToeFrame extends JFrame
     private static final int ROW = 3;
     private static final int COL = 3;
 
-    private TicTacToeTile[][] tiles = new TicTacToeTile[ROW][COL];
-    private String[][] board = new String[ROW][COL];
+    private final TicTacToeTile[][] tiles = new TicTacToeTile[ROW][COL];
+    private final String[][] board = new String[ROW][COL];
 
-    private JPanel mainPnl;
     private JPanel boardPnl;
     private JPanel controlPnl;
 
-    private JLabel statusLbl;
-    private JButton quitBtn;
+    private final JLabel statusLbl;
 
     private String player = "X";
     private int moveCount = 0;
 
-    private ActionListener moveListener;
-
     /**
-     * Creates the Tic Tac Toe game window.
+     * Creates the Tic-tac-toe game window.
      */
     public TicTacToeFrame()
     {
@@ -34,7 +30,7 @@ public class TicTacToeFrame extends JFrame
         setSize(500, 550);
         setLocationRelativeTo(null);
 
-        mainPnl = new JPanel();
+        JPanel mainPnl = new JPanel();
         mainPnl.setLayout(new BorderLayout(10, 10));
         add(mainPnl);
 
@@ -61,31 +57,27 @@ public class TicTacToeFrame extends JFrame
         boardPnl = new JPanel();
         boardPnl.setLayout(new GridLayout(3, 3, 5, 5));
 
-        moveListener = (ActionEvent ae) ->
+        ActionListener moveListener = (ActionEvent ae) ->
         {
             TicTacToeTile clicked = (TicTacToeTile) ae.getSource();
 
             int row = clicked.getRow();
             int col = clicked.getCol();
 
-            if (!board[row][col].equals(" "))
-            {
+            if (!board[row][col].equals(" ")) {
                 JOptionPane.showMessageDialog(
                         this,
                         "That square is already occupied. Choose another square.",
                         "Invalid Move",
                         JOptionPane.WARNING_MESSAGE
                 );
-            }
-            else
-            {
+            } else {
                 board[row][col] = player;
                 clicked.setText(player);
 
                 moveCount++;
 
-                if (moveCount >= 5 && isWin(player))
-                {
+                if (moveCount >= 5 && isWin(player)) {
                     JOptionPane.showMessageDialog(
                             this,
                             "Player " + player + " wins!",
@@ -94,9 +86,7 @@ public class TicTacToeFrame extends JFrame
                     );
 
                     askPlayAgain();
-                }
-                else if (moveCount >= 7 && isTie())
-                {
+                } else if (moveCount >= 7 && isTie()) {
                     JOptionPane.showMessageDialog(
                             this,
                             "The game is a tie!",
@@ -105,15 +95,10 @@ public class TicTacToeFrame extends JFrame
                     );
 
                     askPlayAgain();
-                }
-                else
-                {
-                    if (player.equals("X"))
-                    {
+                } else {
+                    if (player.equals("X")) {
                         player = "O";
-                    }
-                    else
-                    {
+                    } else {
                         player = "X";
                     }
 
@@ -145,9 +130,9 @@ public class TicTacToeFrame extends JFrame
     {
         controlPnl = new JPanel();
 
-        quitBtn = new JButton("Quit");
+        JButton quitBtn = new JButton("Quit");
 
-        quitBtn.addActionListener(ae ->
+        quitBtn.addActionListener(_ ->
         {
             int response = JOptionPane.showConfirmDialog(
                     this,
@@ -255,14 +240,9 @@ public class TicTacToeFrame extends JFrame
             return true;
         }
 
-        if (board[0][2].equals(player)
+        return board[0][2].equals(player)
                 && board[1][1].equals(player)
-                && board[2][0].equals(player))
-        {
-            return true;
-        }
-
-        return false;
+                && board[2][0].equals(player);
     }
 
     /**
@@ -304,16 +284,11 @@ public class TicTacToeFrame extends JFrame
         }
 
         // Check diagonal from top-right to bottom-left
-        if (lineCanWin(board[0][2], board[1][1], board[2][0]))
-        {
-            return false;
-        }
-
-        return true;
+        return !lineCanWin(board[0][2], board[1][1], board[2][0]);
     }
 
     /**
-     * Determines whether a line can still be completed by one player.
+     * Determines whether one player can still complete a line.
      *
      * @param first the first square
      * @param second the second square
